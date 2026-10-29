@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Food Menu</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff8ef;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #a83220;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .customer {
+            text-align: center;
+            margin: 25px;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            width: 240px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 20px;
+        }
+
+        .dish {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px #ddd;
+        }
+
+        .dish h2 {
+            color: #a83220;
+        }
+
+        .quantity {
+            width: 55px;
+            padding: 7px;
+            margin: 10px;
+        }
+
+        button {
+            background: #a83220;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .place-order {
+            display: block;
+            margin: 25px auto;
+            font-size: 16px;
+        }
+
+        .message {
+            text-align: center;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>🍽️ Welcome to Our Restaurant</h1>
+    <p style="text-align:center">Choose your favourite dishes!</p>
+
+    {% if success_message %}
+        <p class="message">{{ success_message }}</p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="customer">
+            <label for="customer_name">Customer Name:</label><br><br>
+            <input
+                type="text"
+                id="customer_name"
+                name="customer_name"
+                placeholder="Enter your name"
+                required
+            >
+        </div>
+
+        <div class="menu">
+            {% for item in menu_items %}
+            <div class="dish">
+                <h2>{{ item.name }}</h2>
+
+                <p>{{ item.description }}</p>
+
+                <h3>₹{{ item.price }}</h3>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        name="item_{{ item.id }}"
+                        value="yes"
+                    >
+                    Choose Dish
+                </label>
+
+                <br>
+
+                <label>
+                    Quantity:
+                    <input
+                        class="quantity"
+                        type="number"
+                        name="quantity_{{ item.id }}"
+                        value="1"
+                        min="1"
+                    >
+                </label>
+            </div>
+            {% empty %}
+            <p>No dishes available yet. Please add menu items in Django Admin.</p>
+            {% endfor %}
+        </div>
+
+        <button class="place-order" type="submit">
+            Place Order
+        </button>
+    </form>
+
+</div>
+</body>
+</html>
